@@ -36,7 +36,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @var    string
          */
-        protected $_fields = 'description_html,location,ends_at';
+        protected $_fields = 'description_html,location,ends_at,starts_at,description_short';
         
         /**
          * Max Length of event name/title
@@ -192,7 +192,19 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          */
         protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = null ) {
 
+            error_log('Get posts by timepad id');
+            error_log('Event');
+            error_log(print_r($event, true));
+            error_log('Status');
+            error_log(print_r($status, true));
+            error_log('Single');
+            error_log(print_r($single, true));
+            error_log('OrganizationID');
+            error_log(print_r($organization_id, true));
+
             if ( !empty( $event ) && isset( $event['id'] ) ) {
+                error_log('Event is not empty');
+
                 $org_id                 = $organization_id ? $organization_id : $this->_data['current_organization_id'];
                 $meta_array             = array(
                     'event_id'         => intval( $event['id'] )
@@ -211,8 +223,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                 $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY, $generated_meta_value ) );
 
+                error_log('Posts');
+                error_log(print_r($posts, true));
+                error_log('Return single post?');
+                error_log(print_r(( $single && isset( $posts[0] ) ), true));
                 return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
             }
+            error_log('Event is empty');
         }
         
         /**
@@ -301,19 +318,50 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'ends_at'           => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
                         ,'tpindex'           => $this->_generate_event_meta_value( $organozation_id, $event_id )
                     );
-                    $content  = ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] : '';
+                    $content  = '';
+                    $location_string = implode(', ', array($meta_array['location']['country'], $meta_array['location']['city'], $meta_array['location']['address']) );                  
+                    if ( isset( $event['description_short'] ) && !empty( $event['description_short'] ) ) {
+                        $content .= $event['description_short'];
+                    }
+                    if ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) {
+                        $content .= $event['description_html'];
+                        # details start
+                        $content .= '<div class="timepad-event-details">';
+                        $content .= '<div class="timepad-event-details-title">Детали события</div>';
+                        # date
+                        $content .= '<div class="timepad-event-details-date">';
+                            $content .= '<i class="font-icon-post fa fa-clock-o"></i> ';
+                            $content .= '<span>' . date("j.m.o", $meta_array['starts_at']);
+                                $content .=  empty( $meta_array['ends_at'] ) ?  " в " : " c ";
+                                $content .=  date("G:i", $meta_array['starts_at']);
+                                if (!empty( $meta_array['ends_at'] )) {
+                                    $content .=  " до " . date("G:i", $meta_array['ends_at']);
+                                }
+                        $content .= '</span></div>';
+                        # location
+                        $content .= '<div class="timepad-event-details-location">';
+                            $content .= '<div class="timepad-event-details-location-address"><i class="font-icon-post fa fa-home"></i> ' . $location_string . '</div>';
+                            $content .= '<div class="timepad-event-details-location-map">';
+                                $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=AIzaSyBn9nH320gjn8oAw1tNzuf-nUsXKJ5V2FY" allowfullscreen></iframe>';
+                        $content .= '</div></div>';
+                        # ditails end
+                        $content .= '</div>';                            
+                    }
+                        
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
                         $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
                     }
                     $date = $this->_make_post_time( $event['starts_at'] );
+                    $post_title = sanitize_text_field( $event['name'] );
                     $insert_args = array(
-                        'post_title'         => sanitize_text_field( $event['name'] )
+                        'post_title'         => $post_title
                         ,'post_content'      => $content
                         ,'post_status'       => 'publish'
                         ,'post_date'         => $date['date']
                         ,'post_date_gmt'     => $date['date_gmt']
                         ,'post_modified'     => $date['date']
                         ,'post_modified_gmt' => $date['date_gmt']
+                        ,'post_name'         => transliterator_transliterate('Russian-Latin/BGN', $post_title )
                     );
                     $category_id                  = intval( $this->_data['category_id'] );
                     $insert_args['post_type']     = TIMEPADEVENTS_POST_TYPE;
@@ -328,12 +376,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $taxonomy                     = 'category';
                         }
                     }
+                    $insert_args['post_author'] = 4;
                     
                     $check_post = $this->_get_posts_by_timepad_event_id( $event );
+
+                    error_log('Import post. Validate post exists');
+                    error_log(print_r($check_post, true));
                     
                     if ( empty( $check_post ) ) {
+                        error_log('Import post. Post does not exists');
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
+                            error_log('Import post. Post created');
                             update_post_meta( $id, TIMEPADEVENTS_META, $meta_array );
                             update_post_meta( $id, TIMEPADEVENTS_KEY, $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] ) );
                             $this->_set_post_thumbnail( $id, $event );
@@ -345,6 +399,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                         }
                     } else if ($check_post->ID && $check_post->post_status != 'trash') {
+                        error_log('Import post. ID exists, status not in trash');
                         $insert_args['ID'] = $check_post->ID;
                         unset( $insert_args['post_title'] );
                         unset( $insert_args['post_content'] );
@@ -352,6 +407,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         wp_update_post( $insert_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
                     }
+                    error_log('Import post. Done!');
                 }
             }
         }
@@ -747,6 +803,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             );
             $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
             $events = $this->_get_request_array( $query_str );
+            error_log('Load events. Query string');
+            error_log(print_r($query_str, true));
+            error_log('Load events');
+            error_log(print_r($events, true));
             if ( isset( $events['total'] ) ) {
                 $events_count = intval( $events['total'] );
                 if ( $events_count > $this->_default_limit ) {
@@ -764,13 +824,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                 }
             }
+            error_log('Load events. After pagination');
+            error_log(print_r($events, true));
 
 
             if ( isset( $events['values'] ) ) {
+                error_log('Load events. Preparing');
+                
                 $events = $this->_prepare_events( $events['values'], $organization_id, true );
                 //$this->_data['events'][$organization_id] = $this->_make_events_array( $events['all'] );
                 //$events     = $this->getEventIds($organization_id);
 //                print_r($events);exit();
+                error_log(print_r($events, true));
 
                 if ( !empty( $events['exist'] ) && is_array( $events['exist'] ) ) {
                     $events_exist = $this->_make_events_array( $events['exist'] );
