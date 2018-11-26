@@ -14,6 +14,18 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         public static function get_file_extension($path) {
             return strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
         }
+
+        /**
+         * Returns web image extension by MIME
+         * 
+         * @since  1.1
+         * @param  string $mime Given MIME-type
+         * @access public
+         * @return boolean|string
+         */
+        public static function debug_execution($obj) {
+
+        }
         
         /**
          * Returns web image extension by MIME
