@@ -367,7 +367,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'post_date_gmt'     => $date['date_gmt']
                         ,'post_modified'     => $date['date']
                         ,'post_modified_gmt' => $date['date_gmt']
-                        ,'post_name'         => transliterator_transliterate('Russian-Latin/BGN', $post_title )
+                        ,'post_name'         => TimepadEvents_Helpers::transliterate( $post_title )
                     );
                     $category_id                  = intval( $this->_data['category_id'] );
                     $insert_args['post_type']     = TIMEPADEVENTS_POST_TYPE;
