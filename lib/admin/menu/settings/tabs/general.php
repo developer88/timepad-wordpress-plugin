@@ -36,7 +36,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @var    string
          */
-        protected $_fields = 'description_html,location,ends_at,starts_at,description_short';
+        protected $_fields = 'description_html,location,ends_at,starts_at,description_short,registration_data';
         
         /**
          * Max Length of event name/title
@@ -308,6 +308,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
                 foreach ( $events as $event ) {
+                    error_log('Load events. Export subscribers for event ' . $event['id']);
+                    //$this->export_subscribers($event);
+
                     $event_id = intval( $event['id'] );
                     $organozation_id = intval( $this->_data['current_organization_id'] );
                     $meta_array = array(
@@ -331,11 +334,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         # date
                         $content .= '<div class="timepad-event-details-date">';
                             $content .= '<i class="font-icon-post fa fa-clock-o"></i> ';
-                            $content .= '<span>' . date("j.m.o", $meta_array['starts_at']);
+                            // TODO: a bit ugly hack to use the dates from Moscow time zone
+                            $starts_at_moscow = strtotime($meta_array['starts_at'] . ' + 3 hours');
+                            $ends_at_moscow = strtotime($meta_array['ends_at'] . ' + 3 hours');
+                            $content .= '<span>' . date("j.m.o", $starts_at_moscow);
                                 $content .=  empty( $meta_array['ends_at'] ) ?  " в " : " c ";
-                                $content .=  date("G:i", $meta_array['starts_at']);
+                                $content .=  date("G:i", $starts_at_moscow);
                                 if (!empty( $meta_array['ends_at'] )) {
-                                    $content .=  " до " . date("G:i", $meta_array['ends_at']);
+                                    $content .=  " до " . date("G:i", $ends_at_moscow);
                                 }
                         $content .= '</span></div>';
                         # location
@@ -782,6 +788,55 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             
             return array();
         }
+
+        // public function export_subscribers( $event ) {
+        //     error_log('Event id=' . $event['id']);
+        //     error_log(print_r($event, true));
+        //     $orders = $this->_get_request_array( str_replace('{event_id}', $event['id'], $this->_config['orders_url']), 'get' );
+        //     foreach ($orders['values'] as $order) {
+        //         if ( isset($order['mail']) && strlen($order['mail']) > 0 && $order['status']['name'] == NUL!!!! ) {
+        //             // TODO: save $order['mail'] if new
+        //             error_log('__DIR__= ' . __DIR__);   
+        //             error_log('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ ));               
+        //             //require_once plugin_dir_path( __DIR__ ) . '/newsletter/includes/controls.php';
+        // //             $controls = new NewsletterControls();
+        // //             $module = NewsletterUsers::instance();
+        // //             $options_profile = get_option('newsletter_profile');
+        // //             // Builds a subscriber data structure
+        // // $email = $newsletter->normalize_email($data[0]);
+        // // if (empty($email)) {
+        // //     continue;
+        // // }
+
+        // // if (!$newsletter->is_email($email)) {
+        // //     $results .= '[INVALID EMAIL] ' . $line . "\n";
+        // //     $error_count++;
+        // //     continue;
+        // // }
+
+        // // $subscriber = $module->get_user($email, ARRAY_A);
+        // // if ($subscriber == null) {
+        // //     $subscriber = array();
+        // //     $subscriber['email'] = $email;
+        // //     if (isset($data[1])) {
+        // //         $subscriber['name'] = $module->normalize_name($data[1]);
+        // //     }
+        // //     if (isset($data[2])) {
+        // //         $subscriber['surname'] = $module->normalize_name($data[2]);
+        // //     }
+        // //     if (isset($data[3])) {
+        // //         $subscriber['sex'] = $module->normalize_sex($data[3]);
+        // //     }
+        // //     $subscriber['status'] = $controls->data['import_as'];
+        // //     foreach ($controls->data['preferences'] as $i) {
+        // //         $subscriber['list_' . $i] = 1;
+        // //     }
+        // //     $module->save_user($subscriber);
+        // //     $results .= '[ADDED] ' . $line . "\n";
+        // //     $added_count++;
+        //         }
+        //     }
+        // }
 
         /**
          * This function insterts in WPDB events that need to be inserted 
