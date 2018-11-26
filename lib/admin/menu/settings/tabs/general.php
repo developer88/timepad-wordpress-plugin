@@ -335,12 +335,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         $content .= '<div class="timepad-event-details-date">';
                             $content .= '<i class="font-icon-post fa fa-clock-o"></i> ';
                             // TODO: a bit ugly hack to use the dates from Moscow time zone
-                            $starts_at_moscow = strtotime($meta_array['starts_at'] . ' + 3 hours');
-                            $ends_at_moscow = strtotime($meta_array['ends_at'] . ' + 3 hours');
+                            $starts_at_moscow = strtotime($event['starts_at'] . ' + 3 hours');
+                            $ends_at_moscow = strtotime($event['ends_at'] . ' + 3 hours');
                             $content .= '<span>' . date("j.m.o", $starts_at_moscow);
-                                $content .=  empty( $meta_array['ends_at'] ) ?  " в " : " c ";
+                            $use_end_time = (!empty( $meta_array['ends_at'] ) && $starts_at_moscow != $ends_at_moscow);
+                                $content .=  $use_end_time  ?  " c " : " в ";
                                 $content .=  date("G:i", $starts_at_moscow);
-                                if (!empty( $meta_array['ends_at'] )) {
+                                if ($use_end_time) {
                                     $content .=  " до " . date("G:i", $ends_at_moscow);
                                 }
                         $content .= '</span></div>';
