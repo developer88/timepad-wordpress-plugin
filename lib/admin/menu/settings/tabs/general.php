@@ -320,39 +320,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'ends_at'           => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
                         ,'tpindex'           => $this->_generate_event_meta_value( $organozation_id, $event_id )
                     );
-                    $content  = '';
-                    $location_string = implode(', ', array($meta_array['location']['country'], $meta_array['location']['city'], $meta_array['location']['address']) );                  
-                    if ( isset( $event['description_short'] ) && !empty( $event['description_short'] ) ) {
-                        $content .= $event['description_short'];
-                    }
-                    if ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) {
-                        $content .= $event['description_html'];
-                        # details start
-                        $content .= '<div class="timepad-event-details">';
-                        $content .= '<div class="timepad-event-details-title">Детали события</div>';
-                        # date
-                        $content .= '<div class="timepad-event-details-date">';
-                            $content .= '<i class="font-icon-post fa fa-clock-o"></i> ';
-                            // TODO: a bit ugly hack to use the dates from Moscow time zone
-                            $starts_at_moscow = strtotime($event['starts_at'] . ' + 3 hours');
-                            $ends_at_moscow = strtotime($event['ends_at'] . ' + 3 hours');
-                            $content .= '<span>' . date("j.m.o", $starts_at_moscow);
-                            $use_end_time = (!empty( $meta_array['ends_at'] ) && $starts_at_moscow != $ends_at_moscow);
-                                $content .=  $use_end_time  ?  " c " : " в ";
-                                $content .=  date("G:i", $starts_at_moscow);
-                                if ($use_end_time) {
-                                    $content .=  " до " . date("G:i", $ends_at_moscow);
-                                }
-                        $content .= '</span></div>';
-                        # location
-                        $content .= '<div class="timepad-event-details-location">';
-                            $content .= '<div class="timepad-event-details-location-address"><i class="font-icon-post fa fa-home"></i> ' . $location_string . '</div>';
-                            $content .= '<div class="timepad-event-details-location-map">';
-                                $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=AIzaSyBn9nH320gjn8oAw1tNzuf-nUsXKJ5V2FY" allowfullscreen></iframe>';
-                        $content .= '</div></div>';
-                        # ditails end
-                        $content .= '</div>';                            
-                    }
+
+                    $content  = TimepadEvents_Admin_Post_Description::render($event);
                         
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
                         $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
