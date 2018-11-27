@@ -226,13 +226,15 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          */
         protected function _get_request_array( $url, $method = 'get' ) {
             $ret_array = array();
-            error_log('Get request');
-            error_log('Get request. Method');
-            error_log(print_r($method, true));
-            error_log('Get request. Url');
-            error_log(print_r($url, true));
-            error_log('Get request. Request args');
-            error_log(print_r($this->_request_args, true));
+
+            TimepadEvents_Helpers::debug('Get request');
+            TimepadEvents_Helpers::debug('Get request. Method');
+            TimepadEvents_Helpers::debug(print_r($method, true));
+            TimepadEvents_Helpers::debug('Get request. Url');
+            TimepadEvents_Helpers::debug(print_r($url, true));
+            TimepadEvents_Helpers::debug('Get request. Request args');
+            TimepadEvents_Helpers::debug(print_r($this->_request_args, true));
+
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
                 $body      = wp_remote_retrieve_body( $request );

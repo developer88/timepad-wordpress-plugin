@@ -191,19 +191,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return object|array single post object or array of WP posts objects
          */
         protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = null ) {
-
-            error_log('Get posts by timepad id');
-            error_log('Event');
-            error_log(print_r($event, true));
-            error_log('Status');
-            error_log(print_r($status, true));
-            error_log('Single');
-            error_log(print_r($single, true));
-            error_log('OrganizationID');
-            error_log(print_r($organization_id, true));
+            TimepadEvents_Helpers::debug('Get posts by timepad id');
+            TimepadEvents_Helpers::debug('Event');
+            TimepadEvents_Helpers::debug(print_r($event, true));
+            TimepadEvents_Helpers::debug('Status');
+            TimepadEvents_Helpers::debug(print_r($status, true));
+            TimepadEvents_Helpers::debug('Single');
+            TimepadEvents_Helpers::debug(print_r($single, true));
+            TimepadEvents_Helpers::debug('OrganizationID');
+            TimepadEvents_Helpers::debug(print_r($organization_id, true));
 
             if ( !empty( $event ) && isset( $event['id'] ) ) {
-                error_log('Event is not empty');
+                TimepadEvents_Helpers::debug('Event is not empty');
 
                 $org_id                 = $organization_id ? $organization_id : $this->_data['current_organization_id'];
                 $meta_array             = array(
@@ -223,13 +222,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                 $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY, $generated_meta_value ) );
 
-                error_log('Posts');
-                error_log(print_r($posts, true));
-                error_log('Return single post?');
-                error_log(print_r(( $single && isset( $posts[0] ) ), true));
+                TimepadEvents_Helpers::debug('Posts');
+                TimepadEvents_Helpers::debug(print_r($posts, true));
+                TimepadEvents_Helpers::debug('Return single post?');
+                TimepadEvents_Helpers::debug(print_r(( $single && isset( $posts[0] ) ), true));
                 return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
             }
-            error_log('Event is empty');
+            TimepadEvents_Helpers::debug('Event is empty');
         }
         
         /**
@@ -308,7 +307,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
                 foreach ( $events as $event ) {
-                    error_log('Load events. Export subscribers for event ' . $event['id']);
+                    TimepadEvents_Helpers::debug('Load events. Export subscribers for event ' . $event['id']);
                     //$this->export_subscribers($event);
 
                     $event_id = intval( $event['id'] );
@@ -387,14 +386,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     
                     $check_post = $this->_get_posts_by_timepad_event_id( $event );
 
-                    error_log('Import post. Validate post exists');
-                    error_log(print_r($check_post, true));
+                    TimepadEvents_Helpers::debug('Import post. Validate post exists');
+                    TimepadEvents_Helpers::debug(print_r($check_post, true));
                     
                     if ( empty( $check_post ) ) {
-                        error_log('Import post. Post does not exists');
+                        TimepadEvents_Helpers::debug('Import post. Post does not exists');
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
-                            error_log('Import post. Post created');
+                            TimepadEvents_Helpers::debug('Import post. Post created');
                             update_post_meta( $id, TIMEPADEVENTS_META, $meta_array );
                             update_post_meta( $id, TIMEPADEVENTS_KEY, $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] ) );
                             $this->_set_post_thumbnail( $id, $event );
@@ -406,7 +405,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                         }
                     } else if ($check_post->ID && $check_post->post_status != 'trash') {
-                        error_log('Import post. ID exists, status not in trash');
+                        TimepadEvents_Helpers::debug('Import post. ID exists, status not in trash');
                         $insert_args['ID'] = $check_post->ID;
                         unset( $insert_args['post_title'] );
                         unset( $insert_args['post_content'] );
@@ -414,7 +413,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         wp_update_post( $insert_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
                     }
-                    error_log('Import post. Done!');
+                    TimepadEvents_Helpers::debug('Import post. Done!');
                 }
             }
         }
@@ -791,14 +790,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         }
 
         // public function export_subscribers( $event ) {
-        //     error_log('Event id=' . $event['id']);
-        //     error_log(print_r($event, true));
+        //     TimepadEvents_Helpers::debug('Event id=' . $event['id']);
+        //     TimepadEvents_Helpers::debug(print_r($event, true));
         //     $orders = $this->_get_request_array( str_replace('{event_id}', $event['id'], $this->_config['orders_url']), 'get' );
         //     foreach ($orders['values'] as $order) {
         //         if ( isset($order['mail']) && strlen($order['mail']) > 0 && $order['status']['name'] == NUL!!!! ) {
         //             // TODO: save $order['mail'] if new
-        //             error_log('__DIR__= ' . __DIR__);   
-        //             error_log('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ ));               
+        //             TimepadEvents_Helpers::debug('__DIR__= ' . __DIR__);   
+        //             TimepadEvents_Helpers::debug('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ ));               
         //             //require_once plugin_dir_path( __DIR__ ) . '/newsletter/includes/controls.php';
         // //             $controls = new NewsletterControls();
         // //             $module = NewsletterUsers::instance();
@@ -859,10 +858,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             );
             $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
             $events = $this->_get_request_array( $query_str );
-            error_log('Load events. Query string');
-            error_log(print_r($query_str, true));
-            error_log('Load events');
-            error_log(print_r($events, true));
+            TimepadEvents_Helpers::debug('Load events. Query string');
+            TimepadEvents_Helpers::debug(print_r($query_str, true));
+            TimepadEvents_Helpers::debug('Load events');
+            TimepadEvents_Helpers::debug(print_r($events, true));
             if ( isset( $events['total'] ) ) {
                 $events_count = intval( $events['total'] );
                 if ( $events_count > $this->_default_limit ) {
@@ -880,18 +879,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                 }
             }
-            error_log('Load events. After pagination');
-            error_log(print_r($events, true));
+            TimepadEvents_Helpers::debug('Load events. After pagination');
+            TimepadEvents_Helpers::debug(print_r($events, true));
 
 
             if ( isset( $events['values'] ) ) {
-                error_log('Load events. Preparing');
+                TimepadEvents_Helpers::debug('Load events. Preparing');
                 
                 $events = $this->_prepare_events( $events['values'], $organization_id, true );
                 //$this->_data['events'][$organization_id] = $this->_make_events_array( $events['all'] );
                 //$events     = $this->getEventIds($organization_id);
 //                print_r($events);exit();
-                error_log(print_r($events, true));
+                TimepadEvents_Helpers::debug(print_r($events, true));
 
                 if ( !empty( $events['exist'] ) && is_array( $events['exist'] ) ) {
                     $events_exist = $this->_make_events_array( $events['exist'] );

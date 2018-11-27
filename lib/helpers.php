@@ -15,6 +15,14 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             return strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
         }
 
+        /**
+         * Returns transliterated cyrillic text
+         * 
+         * @since  1.1.5.1000
+         * @param  string $text Given cyrillic text
+         * @access public
+         * @return string
+         */
         public static function transliterate($text) {
             $cyr = [
                 'а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п',
@@ -32,15 +40,19 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         }
 
         /**
-         * Returns web image extension by MIME
+         * Prints debug log. If enabled in WP_DEBUG & WP_DEBUG_LOG in config.php
          * 
-         * @since  1.1
-         * @param  string $mime Given MIME-type
+         * @since  1.1.5.1000
+         * @param  string $log Given object to log
          * @access public
-         * @return boolean|string
+         * @return null
          */
-        public static function debug_execution($obj) {
-
+        public static function debug($log) {
+            if ( is_array( $log ) || is_object( $log ) ) {
+                error_log( print_r( $log, true ) );
+            } else {
+                error_log( $log );
+            }
         }
         
         /**
