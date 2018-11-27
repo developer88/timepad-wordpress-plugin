@@ -29,16 +29,17 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
 
             //core init classes store
             $this->_classes = array(
-                'TimepadEvents_Admin_i18n'              => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/i18n.php'
-                ,'TimepadEvents_Admin_Post_Type'        => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/post-type.php'
-                ,'TimepadEvents_Admin_Post_Description' => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/post-description.php'
+                'TimepadEvents_Admin_i18n'                  => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/i18n.php'
+                ,'TimepadEvents_Admin_Post_Type'            => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/post-type.php'
+                ,'TimepadEvents_Admin_Post_Description'     => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/post-description.php'
 
-                ,'TimepadEvents_Admin_Settings'         => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings.php'
+                ,'TimepadEvents_Admin_Settings'             => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings.php'
 
-                ,'TimepadEvents_Admin_Menu'             => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu.php'
+                ,'TimepadEvents_Admin_Menu'                 => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu.php'
 
-                ,'TimepadEvents_Admin_Scripts'          => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php'
-                ,'TimepadEvents_Admin_Styles'           => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php'
+                ,'TimepadEvents_Admin_Scripts'              => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php'
+                ,'TimepadEvents_Admin_Styles'               => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php'
+                ,'TimepadEvents_Admin_Subscribers_Exporter' => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/subscriber-exporter.php'
             );
 
             if ( is_admin() ) {

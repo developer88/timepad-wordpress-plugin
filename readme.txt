@@ -28,6 +28,10 @@ Alternatively, manually unzip the file [timepad-events.zip](/files/timepad-event
 2. Activate the "TimePad Events" plugin in the Plugins section of your WordPress site. An "Events" menu item should appear in the right column.
 3. Navigate to "Events" > "Settings" section and link your WordPress installation to your TimePad account. If you don't have a TimePad account yet, you can easily create it right in this section.
 4. Configure the import settings in the same section. The TimePad Events plugin won't automatically import your events by default.
+5. Add `secrets.json` to the root dir of the plugin with
+
+[config]
+google_maps_api = some-api-key
 
 You're done! Now all events you publish on TimePad will automatically appear on your WordPress website.
 

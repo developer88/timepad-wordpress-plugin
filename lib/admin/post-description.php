@@ -73,7 +73,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
             $content = '<div class="timepad-event-details-location">';
                 $content .= '<div class="timepad-event-details-location-address"><i class="font-icon-post fa fa-home"></i> ' . $location_string . '</div>';
                 $content .= '<div class="timepad-event-details-location-map">';
-                    $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=AIzaSyBn9nH320gjn8oAw1tNzuf-nUsXKJ5V2FY" allowfullscreen></iframe>';
+                    $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=' . $this->_secrets['google_maps_api'] . '" allowfullscreen></iframe>';
                 $content .= '</div>';
             $content .= '</div>';
 

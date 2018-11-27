@@ -24,6 +24,13 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         protected $_config = array();
 
         /**
+         * TimePad Events plugin secrets from secrets.ini
+         * @access protected
+         * @var    array
+         */
+        protected $_secrets = array();
+
+        /**
          * This array collect all local TimepadEvents Classes of some part of the plugin
          *
          * @access protected
@@ -80,6 +87,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             );
             
             $this->_config = self::_get_config();
+            $this->_secrets = self::_get_secrets();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
             
@@ -115,6 +123,15 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          */
         private static function _get_config() {
             return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'config.ini' );
+        }
+
+        /**
+         * This function gets secrets from secrets.ini
+         * @access private
+         * @return array
+         */
+        private static function _get_secrets() {
+            return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'secrets.ini' );
         }
         
         /**
