@@ -16,15 +16,43 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         }
 
         /**
-         * Returns web image extension by MIME
+         * Returns transliterated cyrillic text
          * 
-         * @since  1.1
-         * @param  string $mime Given MIME-type
+         * @since  1.1.5.1000
+         * @param  string $text Given cyrillic text
          * @access public
-         * @return boolean|string
+         * @return string
          */
-        public static function debug_execution($obj) {
+        public static function transliterate($text) {
+            $cyr = [
+                'а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п',
+                'р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',
+                'А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П',
+                'Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я'
+            ];
+            $lat = [
+                'a','b','v','g','d','e','io','zh','z','i','y','k','l','m','n','o','p',
+                'r','s','t','u','f','h','ts','ch','sh','sht','a','i','y','e','yu','ya',
+                'A','B','V','G','D','E','Io','Zh','Z','I','Y','K','L','M','N','O','P',
+                'R','S','T','U','F','H','Ts','Ch','Sh','Sht','A','I','Y','e','Yu','Ya'
+            ];
+            return str_replace($cyr, $lat, $text);
+        }
 
+        /**
+         * Prints debug log. If enabled in WP_DEBUG & WP_DEBUG_LOG in config.php
+         * 
+         * @since  1.1.5.1000
+         * @param  string $log Given object to log
+         * @access public
+         * @return null
+         */
+        public static function debug($log) {
+            if ( is_array( $log ) || is_object( $log ) ) {
+                error_log( print_r( $log, true ) );
+            } else {
+                error_log( $log );
+            }
         }
         
         /**
