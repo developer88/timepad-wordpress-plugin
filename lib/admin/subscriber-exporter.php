@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
 
-    require_once plugin_dir_path( __DIR__ ) . '/newsletter/includes/controls.php';
+    require_once plugin_dir_path( __DIR__ ) . '../../newsletter/includes/controls.php';
     
     class TimepadEvents_Admin_Subscribers_Exporter extends TimepadEvents_Admin_Base {
     
