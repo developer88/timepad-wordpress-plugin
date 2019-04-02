@@ -308,7 +308,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
                 foreach ( $events as $event ) {
                     TimepadEvents_Helpers::debug('Load events. Export subscribers for event ' . $event['id']);
-                    TimepadEvents_Admin_Subscribers_Exporter::export($event, $this->_config);
+                    TimepadEvents_Admin_Subscribers_Exporter::export($event, $this);
 
                     $event_id = intval( $event['id'] );
                     $organozation_id = intval( $this->_data['current_organization_id'] );

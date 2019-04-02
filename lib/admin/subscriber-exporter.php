@@ -13,16 +13,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
          * 
          * @since  1.1.5.1000
          * @param  string $path
-         * @param  array $config
+         * @param  object $object
          * @access public
          * @return null
          */
-        public static function export( $event, $config ) {
+        public static function export( $event, $object ) {
             TimepadEvents_Helpers::debug('__DIR__= ' . __DIR__);   
             TimepadEvents_Helpers::debug('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ )); 
             TimepadEvents_Helpers::debug('Exporting subscribers. Getting orders');
 
-            $orders = $this->_get_request_array( str_replace('{event_id}', $event['id'], $config['orders_url']), 'get' );
+            $orders = $object->_get_request_array( str_replace('{event_id}', $event['id'], $object->_config['orders_url']), 'get' );
             TimepadEvents_Helpers::debug('Exporting subscribers. Received orders');
             TimepadEvents_Helpers::debug($orders);
             $controls = new NewsletterControls();
@@ -31,7 +31,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
             TimepadEvents_Helpers::debug('Exporting subscribers. Processing orders');
             foreach ($orders['values'] as $order) {
                 if( self::order_complete($order) === true ) {
-                    self::export_subscriber($order, $module);
+                    //self::export_subscriber($order, $module);
                 }
             }
         }
@@ -73,6 +73,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
         }
 
         public static function order_complete ( $order ) {
+            TimepadEvents_Helpers::debug('Order dump to check if order complete');
+            TimepadEvents_Helpers::debug(var_dump($order));
             // TODO!!
         }
 
