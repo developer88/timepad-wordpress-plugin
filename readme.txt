@@ -9,6 +9,13 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 TimePad Events for WordPress is the easiest way to start selling tickets on your site using the full stack of TimePad technologies.
 
+!! Do not forget to add `secrets.ini`
+
+```
+[config]
+google_maps_api = SomeSecretOfGoogleMapsAPI
+```
+
 == Description ==
 
 After installing the plugin and connecting your TimePad account you're gonna be able to:

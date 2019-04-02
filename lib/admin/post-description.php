@@ -3,12 +3,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
     
-    class TimepadEvents_Admin_Post_Description extends TimepadEvents_Admin_Base {
+    class TimepadEvents_Admin_Post_Description {
 
         /**
          * @var array The plugin data array
          */
         protected $_event = array();
+
+        /**
+         * @var object Parent class with TimepadEvents_Admin_Base functions
+         */
+        protected $_main_object = null;        
 
         /**
          * Initializes the class
@@ -18,9 +23,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
          * @access public
          * @return object 
          */
-        function __construct( $event ) {
+        function __construct( $event, $main_object ) {
             $this->_event = $event;
-            parent::__construct();
+            $this->_main_object = $main_object;
         }
 
         /**
@@ -41,24 +46,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
                 $content .= $this->_event['description_html'];
             }
             if ( !empty( $content ) ) {
-                $content .= self::render_details();
+                $content .= $this->render_details();
             }
 
             return $content;
         }
 
-        public static function render_details() {
-            $content = '<div class="timepad-event-details">';
-                $content .= '<div class="timepad-event-details-title">Детали события</div>';
-                $content .= self::render_date();
-                $content .= self::render_location();
-            $content .= '</div>';
+        public function render_details() {
+            $content = '<!-- wp:html -->';
+                $content .= '<div class="timepad-event-details">';
+                    $content .= '<div class="timepad-event-details-title">Детали события</div>';
+                    $content .= $this->render_date();
+                    $content .= $this->render_location();
+                $content .= '</div>';
+            $content .= '<!-- /wp:html -->';
 
             return $content;
         }
 
-        public static function render_date() {
-            $moscow_time = self::moscow_date_time_str();
+        public function render_date() {
+            $moscow_time = $this->moscow_date_time_str();
             $content .= '<div class="timepad-event-details-date">';
                 $content .= '<i class="font-icon-post fa fa-clock-o"></i> ';
                 $content .= '<span>' . date("j.m.o", $moscow_time['starts_at']);
@@ -73,7 +80,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
             return $content;
         }
 
-        public static function moscow_date_time_str() {
+        public function moscow_date_time_str() {
             $moscow_offset = '3 hours';
             $starts_at_moscow = strtotime($this->_event['starts_at'] . ' + ' . $moscow_offset);
             $ends_at_moscow = strtotime($this->_event['ends_at'] . ' + ' . $moscow_offset);
@@ -86,12 +93,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
             );
         }
 
-        public static function render_location() {
+        public function render_location() {
             $location_string = implode( ', ', array($this->_event['location']['country'], $this->_event['location']['city'], $this->_event['location']['address']) );  
             $content = '<div class="timepad-event-details-location">';
                 $content .= '<div class="timepad-event-details-location-address"><i class="font-icon-post fa fa-home"></i> ' . $location_string . '</div>';
                 $content .= '<div class="timepad-event-details-location-map">';
-                    $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=' . $this->_secrets['google_maps_api'] . '" allowfullscreen></iframe>';
+                    $content .= '<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=' . urlencode($location_string) . '&key=' . $this->__main_object->_secrets['google_maps_api'] . '" allowfullscreen></iframe>';
                 $content .= '</div>';
             $content .= '</div>';
 
