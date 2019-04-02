@@ -22,7 +22,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
             TimepadEvents_Helpers::debug('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ )); 
             TimepadEvents_Helpers::debug('Exporting subscribers. Getting orders');
 
-            $orders = $object->_get_request_array( str_replace('{event_id}', $event['id'], $object->_config['orders_url']), 'get' );
+            $orders = $object->_get_request_array( str_replace('{event_id}', $event['id'], $object->_config['orders_url']) . '?token=' . $object->_token, 'get' );
             TimepadEvents_Helpers::debug('Exporting subscribers. Received orders');
             TimepadEvents_Helpers::debug($orders);
             $controls = new NewsletterControls();
