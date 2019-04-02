@@ -48,7 +48,7 @@
                         $cat_id = intval( $category->term_id );
                         if ( $category->slug != TIMEPADEVENTS_POST_TYPE_CATEGORY ) :
                         ?>
-                        <option value="<?php echo $cat_id; ?>"<?php selected( $cat_id, isset( $data['autounsync_to_post_category'] ) ? $data['autounsync_to_post_category'] : '' ); ?>><?php echo $category->name; ?></option>
+                        <option value="<?php echo $cat_id; ?>" <?php selected( $cat_id, isset( $data['category_id'] ) ? $data['category_id'] : '' ); ?>><?php echo $category->name; ?></option>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </select>
