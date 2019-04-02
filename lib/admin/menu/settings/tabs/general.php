@@ -321,10 +321,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'tpindex'           => $this->_generate_event_meta_value( $organozation_id, $event_id )
                     );
 
-                    $content  = TimepadEvents_Admin_Post_Description::render($event);
+                    $description_service = new TimepadEvents_Admin_Post_Description($event);
+                    $content  = '<p>' . $description_service->render() . '</p>';
                         
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
-                        $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
+                        $content .= '<p>[timepadregistration eventid="' . $event['id'] . '"]</p>';
                     }
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $post_title = sanitize_text_field( $event['name'] );
