@@ -32,20 +32,22 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
             TimepadEvents_Helpers::debug('Exporting subscribers. Processing orders');
             foreach ($orders['values'] as $order) {
                 if( self::order_complete($order) === true ) {
-                    //self::export_subscriber($order, $module);
+                    self::export_subscriber($order, $module);
                 }
             }
         }
 
         public static function export_subscriber( $order, $module ) {
             foreach ($order['tickets'] as $ticket) {
+                $email = $newsletter->normalize_email($ticket['answers']['mail']);
+
                 if (empty($email)) {
                     TimepadEvents_Helpers::debug('Exporting subscribers. Empty email');  
                     continue;
                 }
+                
                 $first_name = $ticket['answers']['name'];
-                $last_name = $ticket['answers']['surname'];
-                $email = $newsletter->normalize_email($ticket['answers']['mail']);
+                $last_name = $ticket['answers']['surname'];                
 
                 if (!$newsletter->is_email($email)) {
                     TimepadEvents_Helpers::debug('Exporting subscribers. Invalid email' . $email);  
@@ -74,9 +76,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
         }
 
         public static function order_complete ( $order ) {
-            TimepadEvents_Helpers::debug('Order dump to check if order complete');
-            TimepadEvents_Helpers::debug(var_dump($order));
-            // TODO!!
+            TimepadEvents_Helpers::debug('Order status to check if order complete');
+            TimepadEvents_Helpers::debug(var_dump($order['status'], true));
+            // TODO: this is not final.
+            if ( $order['status']['name'] == 'ok' ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
     }
