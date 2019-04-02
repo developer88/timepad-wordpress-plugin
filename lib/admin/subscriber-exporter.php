@@ -13,15 +13,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Subscribers_Exporter' ) ) :
          * 
          * @since  1.1.5.1000
          * @param  string $path
+         * @param  array $config
          * @access public
          * @return null
          */
-        public static function export( $event ) {
+        public static function export( $event, $config ) {
             TimepadEvents_Helpers::debug('__DIR__= ' . __DIR__);   
             TimepadEvents_Helpers::debug('plugin_dir_path( __DIR__ )= ', plugin_dir_path( __DIR__ )); 
             TimepadEvents_Helpers::debug('Exporting subscribers. Getting orders');
 
-            $orders = $this->_get_request_array( str_replace('{event_id}', $event['id'], $this->_config['orders_url']), 'get' );
+            $orders = $this->_get_request_array( str_replace('{event_id}', $event['id'], $config['orders_url']), 'get' );
             TimepadEvents_Helpers::debug('Exporting subscribers. Received orders');
             TimepadEvents_Helpers::debug($orders);
             $controls = new NewsletterControls();
