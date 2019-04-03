@@ -325,7 +325,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $content  = '<p>' . $description_service->render() . '</p>';
                         
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
+                        $content .= '<!-- wp:html -->';
                         $content .= '<p>[timepadregistration eventid="' . $event['id'] . '"]</p>';
+                        $content .= '<!-- /wp:html -->';
                     }
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $post_title = sanitize_text_field( $event['name'] );
