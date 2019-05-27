@@ -40,10 +40,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Description' ) ) :
         public function render() {
             $content = '';
             if ( isset( $this->_event['description_short'] ) && !empty( $this->_event['description_short'] ) ) {
-                $content .= $this->_event['description_short'];
+                $content .= '<!-- wp:html -->';
+                    $content .= $this->_event['description_short'];
+                $content .= '<!-- /wp:html -->';
             }
             if ( isset( $this->_event['description_html'] ) && !empty( $this->_event['description_html'] ) ) {
-                $content .= $this->_event['description_html'];
+                $content .= '<!-- wp:html -->';
+                    $content .= $this->_event['description_html'];
+                $content .= '<!-- /wp:html -->';
             }
             if ( !empty( $content ) ) {
                 $content .= $this->render_details();

@@ -322,7 +322,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     );
 
                     $description_service = new TimepadEvents_Admin_Post_Description($event, $this);
-                    $content  = '<p>' . $description_service->render() . '</p>';
+                    $content  = $description_service->render();
                         
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
                         $content .= '<!-- wp:html -->';
